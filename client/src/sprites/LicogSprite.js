@@ -19,11 +19,12 @@ var LicogSprite=function(global,props){
         stroke: 'black',
         tension: 1
     });
+    var color=0xCCCCCC;
     var inCircle = new Konva.Circle({
         x: 0,
         y: 0,
         radius: radius*0.75,
-        fill: '#CCCCCC',
+        fill: "#"+color.toString(16),
         strokeWidth: 4
     });
     var outCircle = new Konva.Circle({
@@ -60,6 +61,18 @@ var LicogSprite=function(global,props){
         }
         
     }
+    this.representTrigger=function(value){
+        if(value){
+            inCircle.fill("#FFF");
+        }else{
+            inCircle.fill("#"+color.toString(16));
+        }
+    }
+    this.produceTrigger=function(){
+        if(self.coupler){
+            self.coupler.update({triggered:true});
+        }
+    }
     group.on('mouseenter',function(evt){
         //console.log(name,evt);
         inCircle.setFill("#DDD");
@@ -73,6 +86,7 @@ var LicogSprite=function(global,props){
     });
     var groupDragListener=false;
     inCircle.on('dragstart mousedown',function(evt){
+        self.produceTrigger();
         if(!groupDragListener) groupDragListener=mouse.on('move',function(evt){
             var pos={
                 x:group.x(),y:group.y()
@@ -177,6 +191,9 @@ var LicogSprite=function(global,props){
             }
             if(evt.position){
                 self.refreshPosition();
+            }
+            if(evt.triggered){
+                self.representTrigger(evt.triggered);
             }
         })
         coupler.update(props);

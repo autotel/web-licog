@@ -3,7 +3,6 @@ import CoupledObject from "./CoupledObject";
 var ModulesManager=function(global){
     var availableModules= {
     };
-
     var instancedModules=[];
     this.createModule=function(name,props={}){
         var coupleList=[];
