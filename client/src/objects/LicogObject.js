@@ -26,7 +26,8 @@ var LicogModule=function(global,props){
     var coupler=false;
     var baseMessage=new EventMessage()
     baseMessage.typeName("trigger");
-    this.couple=function(coupler){
+    this.couple=function(icoupler){
+        coupler=icoupler
         uniqueToModule[coupler.unique]=self;
         coupler.on('change',function(evt){
             var trackList=['type','triggered'];
@@ -46,8 +47,9 @@ var LicogModule=function(global,props){
                     }
                 }
             }
+            console.log(coupler.unique,"trigger?",self.triggered);
+
         });
-        coupler=coupler;
     }
     var clock={
         microStep:0,
@@ -76,9 +78,7 @@ var LicogModule=function(global,props){
         }
     }
     function step(){
-        console.log("step",self.triggered);
-        
-        if(self.triggered){
+        if(self.triggered===true){
             self.output(baseMessage);
             self.triggered=false;
             if(coupler){

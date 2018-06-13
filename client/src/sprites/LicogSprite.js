@@ -6,7 +6,7 @@ var LicogSprite=function(global,props){
     this.name="licog sprite";
     var name=this.name;
     var self=this;
-    var radius=20;
+    var radius=30;
     var mouse=global.renderer.mouse;
     this.coupler=false;
     mouse.tracked.add(this);
@@ -23,7 +23,7 @@ var LicogSprite=function(global,props){
     var inCircle = new Konva.Circle({
         x: 0,
         y: 0,
-        radius: radius*0.75,
+        radius: radius*0.65,
         fill: "#"+color.toString(16),
         strokeWidth: 4
     });
@@ -37,12 +37,13 @@ var LicogSprite=function(global,props){
     });
     var idText = new Konva.Text({
         text:"tste",
-        fill:"white"
+        fill:"crimson",
+        'pointer-events':"none",
     });
     group.add(creatorLine);
     group.add(outCircle);
     group.add(inCircle);
-    // group.add(idText);
+    group.add(idText);
     
     var creatorDragging=false;
     
@@ -66,11 +67,14 @@ var LicogSprite=function(global,props){
             inCircle.fill("#FFF");
         }else{
             inCircle.fill("#"+color.toString(16));
+            // inCircle.fill("black");
         }
     }
     this.produceTrigger=function(){
         if(self.coupler){
             self.coupler.update({triggered:true});
+            console.log(self.coupler.unique,"UI produce trigger");
+            
         }
     }
     group.on('mouseenter',function(evt){
@@ -80,13 +84,17 @@ var LicogSprite=function(global,props){
     });
     group.on('mouseleave',function(evt){
         //console.log(name,evt);
-        inCircle.setFill("#CCC");
+        inCircle.setFill("#"+color.toString(16));
         
         mouse.hovered.delete(self);
     });
     var groupDragListener=false;
-    inCircle.on('dragstart mousedown',function(evt){
+    inCircle.on('dblclick',function(evt){
+        console.log(evt);
         self.produceTrigger();
+    });
+    inCircle.on('dragstart mousedown',function(evt){
+        
         if(!groupDragListener) groupDragListener=mouse.on('move',function(evt){
             var pos={
                 x:group.x(),y:group.y()
@@ -174,7 +182,7 @@ var LicogSprite=function(global,props){
         self.unique=coupler.unique;
         uniqueToSprite[coupler.unique]=self;
         coupler.on('change',function(evt){
-            if(evt.outputs){
+            if(evt.outputs!==undefined){
                 for(var num in coupler.vars.outputs){
                     console.log("iterate output",num);
                     var destinationUnique=coupler.vars.outputs[num];
@@ -189,10 +197,10 @@ var LicogSprite=function(global,props){
                     }
                 }
             }
-            if(evt.position){
+            if(evt.position!==undefined){
                 self.refreshPosition();
             }
-            if(evt.triggered){
+            if(evt.triggered!==undefined){
                 self.representTrigger(evt.triggered);
             }
         })

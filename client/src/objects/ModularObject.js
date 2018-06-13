@@ -52,6 +52,9 @@ var ModularObject=function(global,props){
             return false;
         }
         self.outputs.forEach(function(output){
+            if(output.coupler) {
+                console.log(self.coupler.unique,"-->",output.coupler.unique);
+            }
             lazyStack.enq(function(){
                 // console.log(output);
                 if(typeof output.receive !== "function") console.log("!",output);
